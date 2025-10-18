@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CA Final Exam Psychological Readiness Analyzer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #eef4fa;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 900px;
+            margin: 35px auto 0 auto;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 0 10px #b8c6d5;
+            padding: 30px;
+            position: relative;
+        }
+        h1 {
+            text-align: center;
+            color: #14326e;
+            margin-bottom: 10px;
+        }
+        .question {
+            margin: 22px 0 16px 0;
+        }
+        .options label {
+            margin-bottom: 6px;
+            display: block;
+            padding: 6px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .options label:hover {
+            background: #e9effb;
+        }
+        .submit-btn {
+            display: block;
+            margin: 30px auto 0 auto;
+            padding: 14px 35px;
+            background: #14326e;
+            color: #fff;
+            border: none;
+            border-radius: 7px;
+            font-size: 1.1em;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .submit-btn:hover {
+            background: #174bac;
+        }
+        #result-section {
+            margin: 32px auto;
+            padding: 16px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 18px;
+            font-size: 1.04em;
+        }
+        th, td {
+            border: 1px solid #b3bed7;
+            padding: 9px;
+            text-align: center;
+        }
+        th {
+            background: #14326e;
+            color: #fff;
+        }
+        tr:nth-child(even) td {
+            background: #f5f8fb;
+        }
+        .export-btn {
+            margin: 18px auto 0 auto;
+            display: block;
+            padding: 10px 25px;
+            background: #44a154;
+            color: #fff;
+            text-align: center;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 1em;
+        }
+        .export-btn:hover {
+            background: #36b33d;
+        }
+        .timer {
+            text-align: right;
+            color: #174bac;
+            font-weight: bold;
+            font-size: 1em;
+        }
+        footer {
+            margin-top: 40px;
+            font-size: 0.9em;
+            color: #556677;
+            text-align: center;
+            border-top: 1px solid #dde3f0;
+            padding-top: 18px;
+            line-height: 1.5em;
+        }
+        .branding {
+            text-align: center;
+            font-weight: 600;
+            color: #14326e;
+            margin-bottom: 6px;
+            font-size: 1.1em;
+        }
+        .disclaimer {
+            margin-top: 30px;
+            font-size: 0.95em;
+            color: #a94442;
+            background-color: #fcebea;
+            border: 1px solid #ebccd1;
+            border-radius: 6px;
+            padding: 15px 20px;
+            line-height: 1.4em;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>CA Final Exam Psychological Readiness Analyzer</h1>
+    <div class="timer" id="timer">Elapsed Time: 0s</div>
+    <form id="exam-form">
+        <!-- 20 Psychology-based Questions -->
+        <div class="question"><strong>1. How confident are you about your ability to clear the CA Final on your first attempt?</strong>
+            <div class="options">
+                <label><input type="radio" name="q1" value="4"> Very confident</label>
+                <label><input type="radio" name="q1" value="3"> Somewhat confident</label>
+                <label><input type="radio" name="q1" value="2"> Slightly confident</label>
+                <label><input type="radio" name="q1" value="1"> Not at all confident</label>
+            </div>
+        </div>
+        <div class="question"><strong>2. How often do you experience exam-related anxiety?</strong>
+            <div class="options">
+                <label><input type="radio" name="q2" value="1"> Very often</label>
+                <label><input type="radio" name="q2" value="2"> Often</label>
+                <label><input type="radio" name="q2" value="3"> Rarely</label>
+                <label><input type="radio" name="q2" value="4"> Never</label>
+            </div>
+        </div>
+        <div class="question"><strong>3. Can you concentrate on your studies for more than an hour without distractions?</strong>
+            <div class="options">
+                <label><input type="radio" name="q3" value="4"> Always</label>
+                <label><input type="radio" name="q3" value="3"> Frequently</label>
+                <label><input type="radio" name="q3" value="2"> Sometimes</label>
+                <label><input type="radio" name="q3" value="1"> Rarely</label>
+            </div>
+        </div>
+        <div class="question"><strong>4. How effective is your current study plan?</strong>
+            <div class="options">
+                <label><input type="radio" name="q4" value="4"> Very effective</label>
+                <label><input type="radio" name="q4" value="3"> Moderately effective</label>
+                <label><input type="radio" name="q4" value="2"> Slightly effective</label>
+                <label><input type="radio" name="q4" value="1"> Not effective</label>
+            </div>
+        </div>
+        <div class="question"><strong>5. How many mock tests have you attempted in full exam conditions in the last 3 months?</strong>
+            <div class="options">
+                <label><input type="radio" name="q5" value="4"> 4 or more</label>
+                <label><input type="radio" name="q5" value="3"> 2-3</label>
+                <label><input type="radio" name="q5" value="2"> 1</label>
+                <label><input type="radio" name="q5" value="1"> None</label>
+            </div>
+        </div>
+        <div class="question"><strong>6. Are you able to recall key concepts during practice sessions?</strong>
+            <div class="options">
+                <label><input type="radio" name="q6" value="4"> Almost always</label>
+                <label><input type="radio" name="q6" value="3"> Often</label>
+                <label><input type="radio" name="q6" value="2"> Sometimes</label>
+                <label><input type="radio" name="q6" value="1"> Rarely</label>
+            </div>
+        </div>
+        <div class="question"><strong>7. How do you manage stress during exam preparation?</strong>
+            <div class="options">
+                <label><input type="radio" name="q7" value="4"> Regular exercise/meditation</label>
+                <label><input type="radio" name="q7" value="3"> Talking with peers/family</label>
+                <label><input type="radio" name="q7" value="2"> Occasional breaks</label>
+                <label><input type="radio" name="q7" value="1"> No specific strategy</label>
+            </div>
+        </div>
+        <div class="question"><strong>8. How well can you prioritize topics based on their exam weightage?</strong>
+            <div class="options">
+                <label><input type="radio" name="q8" value="4"> Very well</label>
+                <label><input type="radio" name="q8" value="3"> Moderately well</label>
+                <label><input type="radio" name="q8" value="2"> Slightly well</label>
+                <label><input type="radio" name="q8" value="1"> Not at all</label>
+            </div>
+        </div>
+        <div class="question"><strong>9. How often do you discuss your doubts with friends/teachers?</strong>
+            <div class="options">
+                <label><input type="radio" name="q9" value="4"> Always</label>
+                <label><input type="radio" name="q9" value="3"> Frequently</label>
+                <label><input type="radio" name="q9" value="2"> Sometimes</label>
+                <label><input type="radio" name="q9" value="1"> Never</label>
+            </div>
+        </div>
+        <div class="question"><strong>10. Do you follow active revision methods (like solving MCQs, writing practice)?</strong>
+            <div class="options">
+                <label><input type="radio" name="q10" value="4"> Consistently</label>
+                <label><input type="radio" name="q10" value="3"> Occasionally</label>
+                <label><input type="radio" name="q10" value="2"> Rarely</label>
+                <label><input type="radio" name="q10" value="1"> Never</label>
+            </div>
+        </div>
+        <div class="question"><strong>11. Do you get adequate sleep during your preparation?</strong>
+            <div class="options">
+                <label><input type="radio" name="q11" value="4"> Yes, daily</label>
+                <label><input type="radio" name="q11" value="3"> Mostly</label>
+                <label><input type="radio" name="q11" value="2"> Sometimes</label>
+                <label><input type="radio" name="q11" value="1"> Hardly ever</label>
+            </div>
+        </div>
+        <div class="question"><strong>12. Are you able to complete your targeted syllabus as per your timeline?</strong>
+            <div class="options">
+                <label><input type="radio" name="q12" value="4"> Always</label>
+                <label><input type="radio" name="q12" value="3"> Most of the time</label>
+                <label><input type="radio" name="q12" value="2"> Occasionally</label>
+                <label><input type="radio" name="q12" value="1"> Rarely</label>
+            </div>
+        </div>
+        <div class="question"><strong>13. Do you regularly review your mistakes from previous attempts/practice?</strong>
+            <div class="options">
+                <label><input type="radio" name="q13" value="4"> Yes, always</label>
+                <label><input type="radio" name="q13" value="3"> Often</label>
+                <label><input type="radio" name="q13" value="2"> Sometimes</label>
+                <label><input type="radio" name="q13" value="1"> Never</label>
+            </div>
+        </div>
+        <div class="question"><strong>14. How would you rate your motivation levels for exam preparations?</strong>
+            <div class="options">
+                <label><input type="radio" name="q14" value="4"> Highly motivated</label>
+                <label><input type="radio" name="q14" value="3"> Fairly motivated</label>
+                <label><input type="radio" name="q14" value="2"> Sometimes difficult</label>
+                <label><input type="radio" name="q14" value="1"> Poor motivation</label>
+            </div>
+        </div>
+        <div class="question"><strong>15. Do you practice relaxation or mindfulness techniques?</strong>
+            <div class="options">
+                <label><input type="radio" name="q15" value="4"> Regularly</label>
+                <label><input type="radio" name="q15" value="3"> Sometimes</label>
+                <label><input type="radio" name="q15" value="2"> Seldom</label>
+                <label><input type="radio" name="q15" value="1"> Never</label>
+            </div>
+        </div>
+        <div class="question"><strong>16. Are you able to adapt your study methods when something isn’t working?</strong>
+            <div class="options">
+                <label><input type="radio" name="q16" value="4"> Always</label>
+                <label><input type="radio" name="q16" value="3"> Often</label>
+                <label><input type="radio" name="q16" value="2"> Rarely</label>
+                <label><input type="radio" name="q16" value="1"> Never</label>
+            </div>
+        </div>
+        <div class="question"><strong>17. How prepared are your notes and summary sheets?</strong>
+            <div class="options">
+                <label><input type="radio" name="q17" value="4"> Complete and organized</label>
+                <label><input type="radio" name="q17" value="3"> Mostly ready</label>
+                <label><input type="radio" name="q17" value="2"> Partially</label>
+                <label><input type="radio" name="q17" value="1"> Very little/none</label>
+            </div>
+        </div>
+        <div class="question"><strong>18. Do you evaluate your performance objectively after every mock/practice?</strong>
+            <div class="options">
+                <label><input type="radio" name="q18" value="4"> Every time</label>
+                <label><input type="radio" name="q18" value="3"> Often</label>
+                <label><input type="radio" name="q18" value="2"> Sometimes</label>
+                <label><input type="radio" name="q18" value="1"> Never</label>
+            </div>
+        </div>
+        <div class="question"><strong>19. Are you able to avoid procrastination during study hours?</strong>
+            <div class="options">
+                <label><input type="radio" name="q19" value="4"> Always</label>
+                <label><input type="radio" name="q19" value="3"> Mostly</label>
+                <label><input type="radio" name="q19" value="2"> Sometimes</label>
+                <label><input type="radio" name="q19" value="1"> Seldom</label>
+            </div>
+        </div>
+        <div class="question"><strong>20. How physically and mentally healthy do you feel during preparation?</strong>
+            <div class="options">
+                <label><input type="radio" name="q20" value="4"> Excellent</label>
+                <label><input type="radio" name="q20" value="3"> Good</label>
+                <label><input type="radio" name="q20" value="2"> Average</label>
+                <label><input type="radio" name="q20" value="1"> Poor</label>
+            </div>
+        </div>
+        <button type="button" class="submit-btn" onclick="calculateResults()">Submit & Analyse</button>
+    </form>
+
+    <div id="result-section" style="display:none;">
+        <h2>Preparedness Psychology Report</h2>
+        <table id="result-table">
+            <thead>
+            <tr>
+                <th>Metric</th>
+                <th>Value</th>
+            </tr>
+            </thead>
+            <tbody id="result-body">
+            <!-- Results will be generated here -->
+            </tbody>
+        </table>
+        <button class="export-btn" onclick="exportTableToExcel('result-table','CA_Psych_Readiness')"><i class="fas fa-file-excel"></i> Export to Excel</button>
+    </div>
+
+    <div class="disclaimer">
+        <strong>Disclaimer:</strong> This application is intended solely for educational and demonstration purposes related to CA Final exam preparedness and psychology. It is not a substitute for professional academic or psychological advice. Use this tool responsibly and seek personalized guidance for exam preparation.
+    </div>
+
+    <footer>
+        <div class="branding">Developed by CA Tanmay Rajendra Bhavar, Nashik</div>
+        <div>
+            You can search for me on Google and LinkedIn to connect for further professional engagements and guidance.
+        </div>
+        <div>
+            Wishing all CA aspirants the very best in their preparation and success!
+        </div>
+    </footer>
+</div>
+<script>
+    let startTime = Date.now();
+    let interval = setInterval(()=> {
+        let elapsed = Math.floor((Date.now()-startTime)/1000);
+        document.getElementById("timer").innerText = `Elapsed Time: ${elapsed}s`;
+    }, 1000);
+
+    function calculateResults() {
+        clearInterval(interval);
+        const totalQs = 20;
+        let attempted = 0, score = 0, maxScore = 4*totalQs;
+        let lowAreas=[], mediumAreas=[], strongAreas=[];
+        let questions = [
+            "Self-confidence",
+            "Anxiety management",
+            "Concentration",
+            "Study planning",
+            "Test practice",
+            "Concept recall",
+            "Stress management",
+            "Prioritization skills",
+            "Doubt clearing",
+            "Active revision",
+            "Sleep",
+            "Syllabus discipline",
+            "Mistake review",
+            "Motivation sustainability",
+            "Mindfulness",
+            "Adaptability",
+            "Notes & summaries",
+            "Self-evaluation",
+            "Anti-procrastination",
+            "Health and wellness"
+        ];
+        let responses = [], catScores = {};
+
+        for (let i=1;i<=totalQs;++i) {
+            const ans = document.querySelector(`input[name=q${i}]:checked`);
+            if(ans) { 
+                attempted++;
+                score += parseInt(ans.value);
+                catScores[questions[i-1]] = parseInt(ans.value);
+                responses.push(parseInt(ans.value));
+            } else {
+                catScores[questions[i-1]] = 0;
+                responses.push(0);
+            }
+        }
+        // Find time taken
+        let timeTaken = Math.floor((Date.now()-startTime)/1000);
+
+        // Analyze psychological/strategic areas
+        for(let i=0;i<questions.length;++i) {
+            if(responses[i]<=2) lowAreas.push(questions[i]);
+            else if(responses[i]==3) mediumAreas.push(questions[i]);
+            else strongAreas.push(questions[i]);
+        }
+        // Custom metrics
+        let overallReadiness = (score/maxScore)*100;
+        let confidence = catScores["Self-confidence"];
+        let anxiety = catScores["Anxiety management"];
+        let motivation = catScores["Motivation sustainability"];
+        let discipline = catScores["Syllabus discipline"];
+        let adaptability = catScores["Adaptability"];
+        let sleep = catScores["Sleep"];
+        let health = catScores["Health and wellness"];
+        let antiProcrast = catScores["Anti-procrastination"];
+        let avgScore = (attempted ? (score/attempted).toFixed(2) : 0);
+
+        let advice;
+        if (overallReadiness > 80) advice="Excellent psychological readiness. Continue your strategy and maintain your well-being!";
+        else if (overallReadiness > 65) advice="Good overall mindset. Work on medium/low areas shown below and boost your confidence with more mocks.";
+        else advice="Significant areas of concern. Please address listed weak spots and seek guidance if required.";
+
+        // Report rows: summarize 10 useful metrics
+        const rows = [
+            ["Attempted Questions", attempted + "/" + totalQs],
+            ["Average Psychological Score", avgScore],
+            ["Overall Readiness (%)", overallReadiness.toFixed(1) + "%"],
+            ["Self-confidence (1-4)", confidence],
+            ["Anxiety Management (1-4)", anxiety],
+            ["Motivation Sustainability (1-4)", motivation],
+            ["Discipline (Syllabus Completion, 1-4)", discipline],
+            ["Adaptability (1-4)", adaptability],
+            ["Procrastination Control (1-4)", antiProcrast],
+            ["Average Sleep Score (1-4)", sleep],
+            ["Physical & Mental Health (1-4)", health],
+            ["Strong Areas", strongAreas.length?strongAreas.join(", "):"None"],
+            ["Areas Needing Improvement", lowAreas.length?lowAreas.join(", "):"None"],
+            ["Mid-Range (for enhancement)", mediumAreas.length?mediumAreas.join(", "):"None"],
+            ["Total Time (seconds)", timeTaken+"s"],
+            ["Advice", advice]
+        ];
+        document.getElementById("exam-form").style.display = "none";
+        document.getElementById("result-section").style.display = "block";
+        let body = document.getElementById("result-body");
+        body.innerHTML = rows.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td></tr>`).join('');
+    }
+
+    // Export-to-Excel
+    function exportTableToExcel(tableID, filename = ''){
+        let dataType = 'application/vnd.ms-excel';
+        let tableSelect = document.getElementById(tableID);
+        let tableHTML = tableSelect.outerHTML.replace(/ /g, '%20');
+        filename = filename?filename+'.xls':'excel_data.xls';
+        let downloadLink = document.createElement("a");
+        document.body.appendChild(downloadLink);
+        downloadLink.href = 'data:' + dataType + ', ' + tableHTML;
+        downloadLink.download = filename;
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+    }
+</script>
+</body>
+</html>
