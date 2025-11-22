@@ -1078,3 +1078,261 @@ footer {
         box-shadow: none;
     }
 }
+/* Pre/Post check cards */
+.precheck-card,
+.postcheck-card {
+    margin: 20px 0 25px 0;
+    padding: 18px 20px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #e3f2fd, #f1f8e9);
+    border: 1px solid var(--border-color);
+}
+
+.precheck-card h2,
+.postcheck-card h2 {
+    margin-bottom: 10px;
+    color: var(--primary-color);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.precheck-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 8px 0;
+    flex-wrap: wrap;
+}
+
+.precheck-row input[type="range"] {
+    flex: 1;
+}
+
+.precheck-note {
+    font-size: 0.85em;
+    color: #666;
+}
+
+.mood-buttons {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.mood-btn {
+    border: none;
+    border-radius: 20px;
+    padding: 6px 14px;
+    cursor: pointer;
+    background: #e0e0e0;
+    transition: var(--transition);
+}
+
+.mood-btn.active {
+    background: var(--secondary-color);
+    color: #fff;
+}
+
+/* Breathing card */
+.breathing-card {
+    margin: 25px 0;
+    padding: 18px 20px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #e8eaf6, #e3f2fd);
+    border: 1px solid var(--border-color);
+}
+
+.breathing-visual {
+    margin-top: 15px;
+    text-align: center;
+}
+
+.breathing-phase {
+    font-weight: 600;
+}
+
+.breathing-circle {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    margin: 15px auto 0;
+    background: rgba(20, 50, 110, 0.15);
+    transition: all 1s ease;
+}
+
+/* Action plan & micro goals */
+.action-plan-section {
+    margin: 25px 0;
+    padding: 18px 20px;
+    border-radius: 10px;
+    background: #f9fbe7;
+    border: 1px solid var(--border-color);
+}
+
+.action-plan-section h3 {
+    margin-bottom: 10px;
+    color: var(--primary-color);
+}
+
+.action-plan-section ul {
+    margin-left: 18px;
+    margin-bottom: 10px;
+}
+
+.micro-goals-title {
+    margin-top: 10px;
+    margin-bottom: 6px;
+    font-size: 1.05em;
+}
+
+.micro-goals label {
+    display: block;
+    margin: 4px 0;
+}
+
+/* Spaced repetition planner */
+.spaced-repetition-section {
+    margin: 25px 0;
+    padding: 18px 20px;
+    border-radius: 10px;
+    background: #e8f5e9;
+    border: 1px solid var(--border-color);
+}
+
+.spaced-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 10px 0;
+}
+
+.spaced-form input {
+    flex: 1;
+    padding: 8px 10px;
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+}
+
+#spaced-list {
+    margin-left: 18px;
+}
+
+#spaced-list li {
+    margin: 4px 0;
+    font-size: 0.95em;
+}
+
+/* Journal */
+.journal-section {
+    margin: 25px 0;
+    padding: 18px 20px;
+    border-radius: 10px;
+    background: #fff3e0;
+    border: 1px solid var(--border-color);
+}
+
+.journal-section textarea {
+    width: 100%;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    padding: 10px;
+    font-family: inherit;
+    margin: 10px 0;
+}
+
+.journal-status {
+    font-size: 0.85em;
+    color: #388e3c;
+    margin-left: 8px;
+}
+
+/* History mini calendar */
+.history-calendar {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+}
+
+.history-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #e0e0e0;
+}
+
+.history-dot.good {
+    background: #4CAF50;
+}
+
+.history-dot.medium {
+    background: #FFB300;
+}
+
+.history-dot.low {
+    background: #E53935;
+}
+
+/* Resources section */
+.resources-section {
+    margin: 30px 0;
+    padding: 20px;
+    border-radius: 12px;
+    background: var(--card-bg);
+    box-shadow: var(--shadow);
+}
+
+.resource-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.resource-card {
+    text-decoration: none;
+    color: inherit;
+    padding: 14px 16px;
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+    background: #fafafa;
+    transition: var(--transition);
+}
+
+.resource-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow);
+    border-color: var(--primary-color);
+}
+
+.resource-card i {
+    font-size: 22px;
+    margin-bottom: 6px;
+}
+
+.resource-card h4 {
+    font-size: 1.02em;
+    margin-bottom: 6px;
+}
+
+.resource-card p {
+    font-size: 0.9em;
+}
+
+/* Anxiety flag */
+.anxiety-flag {
+    margin: 20px 0;
+    padding: 16px 18px;
+    border-radius: 10px;
+    background: #ffebee;
+    border: 1px solid #ffcdd2;
+    color: #b71c1c;
+}
+
+/* Growth mindset note */
+.growth-mindset-note {
+    margin-top: 10px;
+    font-size: 0.9em;
+    opacity: 0.9;
+}
