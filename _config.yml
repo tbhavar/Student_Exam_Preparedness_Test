@@ -1,0 +1,10 @@
+title: Exam Psychological Readiness Analyzer
+description: Advanced psychological assessment tool for CA exam preparedness
+author: CA Tanmay Rajendra Bhavar
+baseurl: ""
+url: ""
+theme: jekyll-theme-minimal
+markdown: kramdown
+plugins:
+  - jekyll-sitemap
+  - jekyll-seo-tag
