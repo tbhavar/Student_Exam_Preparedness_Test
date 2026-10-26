@@ -57,6 +57,24 @@
         <h1><i class="fas fa-brain"></i> Exam Psychological Readiness Analyzer</h1>
         <p class="subtitle">Evidence-based psychological assessment and improvement planner for CA exam aspirants</p>
 
+        <!-- Candidate / Aspirant Profile Card -->
+        <div class="aspirant-profile-card">
+            <div class="aspirant-profile-header">
+                <i class="fas fa-user-graduate"></i>
+                <h2>Candidate Information</h2>
+            </div>
+            <div class="aspirant-profile-body">
+                <div class="aspirant-input-group">
+                    <label for="aspirant-name-input"><i class="fas fa-id-badge"></i> Candidate / Student Name:</label>
+                    <div class="aspirant-input-wrap">
+                        <input type="text" id="aspirant-name-input" placeholder="e.g. CA Aspirant / Rahul Sharma" autocomplete="name" oninput="syncCandidateName(this.value)">
+                        <span class="aspirant-badge"><i class="fas fa-check-circle"></i> Name for Certificate</span>
+                    </div>
+                    <small class="aspirant-hint"><i class="fas fa-info-circle"></i> Enter your name before starting. It will automatically personalize your Certificate of Achievement upon completion.</small>
+                </div>
+            </div>
+        </div>
+
         <!-- Pre-assessment anxiety & mood check -->
         <div class="precheck-card">
             <h2><i class="fas fa-notes-medical"></i> Quick Self Check (Before Assessment)</h2>
@@ -587,36 +605,23 @@
                 </button>
             </div>
 
-            <!-- Certificate Modal (same as earlier answer) -->
-            <div id="certificate-modal" class="modal">
-                <div class="modal-content certificate">
-                    <span class="close" onclick="closeCertificate()">&times;</span>
-                    <div id="certificate-content">
-                        <div class="cert-border">
-                            <div class="cert-header">
-                                <h1>Certificate of Achievement</h1>
-                                <p class="cert-subtitle">Psychological Readiness Assessment</p>
-                            </div>
-                            <div class="cert-body">
-                                <p class="cert-text">This is to certify that</p>
-                                <h2 class="cert-name" id="cert-name">CA Aspirant</h2>
-                                <p class="cert-text">has successfully completed the Exam Psychological Readiness Assessment</p>
-                                <p class="cert-text">with an overall readiness score of</p>
-                                <h1 class="cert-score" id="cert-score">0%</h1>
-                                <p class="cert-level" id="cert-level">Readiness Level</p>
-                                <div class="cert-footer">
-                                    <div class="cert-date">Date: <span id="cert-date"></span></div>
-                                    <div class="cert-signature">
-                                        <p>CA Tanmay Rajendra Bhavar</p>
-                                        <p class="cert-role">Developer & Assessment Designer</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+            <!-- Certificate Customization Box in Results -->
+            <div class="cert-preview-action-card">
+                <div class="cert-action-info">
+                    <div class="cert-action-icon"><i class="fas fa-award"></i></div>
+                    <div>
+                        <h3>Claim Your Certificate of Achievement</h3>
+                        <p>Verify or personalize your name below, then view and download your official certificate.</p>
                     </div>
-                    <button class="action-btn primary-btn" onclick="downloadCertificate()">
-                        <i class="fas fa-download"></i> Download Certificate
-                    </button>
+                </div>
+                <div class="cert-name-input-row">
+                    <label for="cert-name-edit-input"><strong>Name on Certificate:</strong></label>
+                    <div class="cert-input-btn-group">
+                        <input type="text" id="cert-name-edit-input" placeholder="Enter your full name" oninput="syncCandidateName(this.value)">
+                        <button type="button" class="action-btn primary-btn btn-open-cert" onclick="generateCertificate()">
+                            <i class="fas fa-certificate"></i> View & Download Certificate
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -692,6 +697,140 @@
         </footer>
     </div>
 
+    <!-- Standalone Certificate Modal (Fixed Overlay with Scroll Support) -->
+    <div id="certificate-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="cert-modal-heading">
+        <div class="modal-content certificate-modal-content">
+            <!-- Modal Header Toolbar -->
+            <div class="modal-toolbar">
+                <div class="modal-toolbar-title" id="cert-modal-heading">
+                    <i class="fas fa-award"></i>
+                    <span>Official Certificate of Achievement</span>
+                </div>
+                <button type="button" class="modal-close-icon" onclick="closeCertificate()" aria-label="Close modal" title="Close Preview (Esc)">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <!-- Modal Sub-bar to Edit Name Live -->
+            <div class="modal-name-bar">
+                <label for="modal-cert-name-input"><i class="fas fa-user-edit"></i> Name on Certificate:</label>
+                <div class="name-bar-input-wrap">
+                    <input type="text" id="modal-cert-name-input" placeholder="Enter your full name" oninput="syncCandidateName(this.value)">
+                    <span class="live-tag"><i class="fas fa-sync-alt fa-spin"></i> Live Preview</span>
+                </div>
+            </div>
+
+            <!-- Certificate Printable/Exportable Canvas Container -->
+            <div class="cert-scroll-wrapper">
+                <div id="certificate-content" class="certificate-content">
+                    <div class="cert-border">
+                        <div class="cert-inner-border">
+                            <div class="cert-watermark"><i class="fas fa-graduation-cap"></i></div>
+                            <div class="cert-header">
+                                <div class="cert-crest">
+                                    <i class="fas fa-shield-alt"></i>
+                                </div>
+                                <h1 class="cert-title">Certificate of Achievement</h1>
+                                <p class="cert-subtitle">Exam Psychological & Behavioral Readiness Assessment</p>
+                                <div class="cert-gold-ribbon">
+                                    <span>★ ★ ★ &nbsp; OFFICIAL READINESS CREDENTIAL &nbsp; ★ ★ ★</span>
+                                </div>
+                            </div>
+                            <div class="cert-body">
+                                <p class="cert-salutation">This credential is proudly presented to</p>
+                                <h2 class="cert-name" id="cert-name">CA Aspirant</h2>
+                                <p class="cert-description">
+                                    in recognition of successfully completing the standardized 20-Factor Exam Psychological & Behavioral Readiness Assessment for CA examinations with an overall readiness score of:
+                                </p>
+                                
+                                <div class="cert-badge-section">
+                                    <div class="cert-score-box">
+                                        <div class="cert-score-number" id="cert-score">0%</div>
+                                        <div class="cert-score-lbl">Overall Readiness</div>
+                                    </div>
+                                    <div class="cert-level-pill" id="cert-level">Outstanding Readiness Level</div>
+                                </div>
+
+                                <div class="cert-metrics-row">
+                                    <div class="cert-metric"><span class="m-lbl">Cognitive:</span> <strong id="cert-cog-score">--%</strong></div>
+                                    <div class="cert-metric-sep">•</div>
+                                    <div class="cert-metric"><span class="m-lbl">Emotional:</span> <strong id="cert-emo-score">--%</strong></div>
+                                    <div class="cert-metric-sep">•</div>
+                                    <div class="cert-metric"><span class="m-lbl">Behavioral:</span> <strong id="cert-beh-score">--%</strong></div>
+                                    <div class="cert-metric-sep">•</div>
+                                    <div class="cert-metric"><span class="m-lbl">Physical:</span> <strong id="cert-phy-score">--%</strong></div>
+                                </div>
+
+                                <div class="cert-footer">
+                                    <div class="cert-footer-col cert-date-col">
+                                        <div class="cert-meta-item"><strong>Date:</strong> <span id="cert-date"></span></div>
+                                        <div class="cert-meta-item"><small>Verification ID: <span id="cert-id"></span></small></div>
+                                    </div>
+                                    <div class="cert-footer-col cert-seal-col">
+                                        <div class="gold-seal">
+                                            <i class="fas fa-certificate"></i>
+                                            <div class="seal-caption">VERIFIED<br>ASSESSMENT</div>
+                                        </div>
+                                    </div>
+                                    <div class="cert-footer-col cert-sig-col">
+                                        <div class="cert-signature-name">CA Tanmay Rajendra Bhavar</div>
+                                        <div class="cert-sig-line"></div>
+                                        <div class="cert-sig-title">Developer & Assessment Designer</div>
+                                        <div class="cert-sig-city"><small>Nashik, Maharashtra</small></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Download Button Form with Image, PDF & Print Options -->
+            <div class="certificate-download-panel">
+                <div class="download-panel-heading">
+                    <i class="fas fa-arrow-circle-down"></i> Choose Certificate Download Format:
+                </div>
+                <div class="cert-button-form">
+                    <button type="button" id="btn-download-image" class="cert-btn-form-item btn-image-format" onclick="downloadCertificateAsImage()">
+                        <div class="btn-icon-wrapper"><i class="fas fa-file-image"></i></div>
+                        <div class="btn-text-content">
+                            <span class="btn-primary-text">Download Image (PNG)</span>
+                            <span class="btn-secondary-text">High-Resolution Crisp Image</span>
+                        </div>
+                    </button>
+                    
+                    <button type="button" id="btn-download-pdf" class="cert-btn-form-item btn-pdf-format" onclick="downloadCertificateAsPDF()">
+                        <div class="btn-icon-wrapper"><i class="fas fa-file-pdf"></i></div>
+                        <div class="btn-text-content">
+                            <span class="btn-primary-text">Download PDF Document</span>
+                            <span class="btn-secondary-text">Printable A4 Landscape</span>
+                        </div>
+                    </button>
+
+                    <button type="button" id="btn-print-certificate" class="cert-btn-form-item btn-print-format" onclick="printCertificate()">
+                        <div class="btn-icon-wrapper"><i class="fas fa-print"></i></div>
+                        <div class="btn-text-content">
+                            <span class="btn-primary-text">Print Certificate</span>
+                            <span class="btn-secondary-text">Direct Browser Print</span>
+                        </div>
+                    </button>
+
+                    <button type="button" class="cert-btn-form-item btn-close-format" onclick="closeCertificate()">
+                        <div class="btn-icon-wrapper"><i class="fas fa-times-circle"></i></div>
+                        <div class="btn-text-content">
+                            <span class="btn-primary-text">Close Preview</span>
+                            <span class="btn-secondary-text">Return to Results</span>
+                        </div>
+                    </button>
+                </div>
+                <div id="cert-download-status" class="cert-status-alert" style="display:none;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- External Libraries for High-Quality Image & PDF Export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="assets/js/script.js"></script>
 </body>
 </html>

@@ -10,6 +10,7 @@ let postAnxiety = 5;
 let currentMood = 'medium';
 
 let userData = {
+    studentName: 'CA Aspirant',
     attempts: 0,
     totalPoints: 0,
     badges: [],
@@ -31,10 +32,43 @@ let spacedTopics = [];
 function loadUserData() {
     const stored = localStorage.getItem('examReadinessData');
     if (stored) {
-        userData = JSON.parse(stored);
+        try {
+            userData = Object.assign(userData, JSON.parse(stored));
+        } catch (e) {
+            console.error('Failed to parse stored userData:', e);
+        }
     }
+    if (!userData.studentName) {
+        userData.studentName = 'CA Aspirant';
+    }
+    syncCandidateName(userData.studentName, false);
     updateHeaderStats();
     updateLevelBadge();
+}
+
+function syncCandidateName(name, updateStorage = true) {
+    const trimmed = (name && typeof name === 'string') ? name.trim() : '';
+    const displayName = trimmed || 'CA Aspirant';
+
+    // Synchronize across all 3 inputs without interrupting active focus
+    const inputIds = ['aspirant-name-input', 'cert-name-edit-input', 'modal-cert-name-input'];
+    inputIds.forEach(id => {
+        const el = document.getElementById(id);
+        if (el && el !== document.activeElement) {
+            el.value = trimmed;
+        }
+    });
+
+    // Update certificate display element
+    const certNameEl = document.getElementById('cert-name');
+    if (certNameEl) {
+        certNameEl.textContent = displayName;
+    }
+
+    if (updateStorage) {
+        userData.studentName = displayName;
+        saveUserData();
+    }
 }
 
 function saveUserData() {
@@ -774,33 +808,406 @@ function createConfetti() {
 
 function generateCertificate() {
     const modal = document.getElementById('certificate-modal');
-    if (!modal || !userData.history.length) return;
+    if (!modal) return;
+
+    if (!userData.history || !userData.history.length) {
+        alert('Please complete and submit the readiness assessment first to generate your verified certificate.');
+        return;
+    }
+
     const last = userData.history[userData.history.length - 1];
 
     const scoreEl = document.getElementById('cert-score');
     const levelEl = document.getElementById('cert-level');
     const dateEl = document.getElementById('cert-date');
+    const idEl = document.getElementById('cert-id');
+    const cogEl = document.getElementById('cert-cog-score');
+    const emoEl = document.getElementById('cert-emo-score');
+    const behEl = document.getElementById('cert-beh-score');
+    const phyEl = document.getElementById('cert-phy-score');
 
-    if (scoreEl) scoreEl.textContent = Math.round(last.overall) + '%';
+    const scoreVal = Math.round(last.overall);
+    if (scoreEl) scoreEl.textContent = scoreVal + '%';
 
     let level = 'Developing';
-    if (last.overall >= 90) level = 'Outstanding';
-    else if (last.overall >= 75) level = 'Strong';
-    else if (last.overall >= 60) level = 'Moderate';
+    if (scoreVal >= 90) level = 'Outstanding';
+    else if (scoreVal >= 75) level = 'Strong';
+    else if (scoreVal >= 60) level = 'Moderate';
 
     if (levelEl) levelEl.textContent = `${level} Readiness Level`;
-    if (dateEl) dateEl.textContent = new Date(last.date).toLocaleDateString();
+
+    const assessmentDate = last.date ? new Date(last.date) : new Date();
+    if (dateEl) {
+        dateEl.textContent = assessmentDate.toLocaleDateString('en-IN', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+    }
+
+    if (idEl) {
+        const idHash = Math.abs((last.timeTaken || 120) * 31 + Math.round(last.overall * 100));
+        idEl.textContent = `CA-PR-${idHash}-${assessmentDate.getFullYear()}`;
+    }
+
+    if (cogEl) cogEl.textContent = `Cognitive: ${Math.round(last.cognitive || 0)}%`;
+    if (emoEl) emoEl.textContent = `Emotional: ${Math.round(last.emotional || 0)}%`;
+    if (behEl) behEl.textContent = `Behavioral: ${Math.round(last.behavioral || 0)}%`;
+    if (phyEl) phyEl.textContent = `Physical: ${Math.round(last.physical || 0)}%`;
+
+    syncCandidateName(userData.studentName || 'CA Aspirant', false);
+    clearDownloadStatus();
 
     modal.style.display = 'block';
+    document.body.classList.add('modal-open');
+    modal.scrollTop = 0;
 }
 
 function closeCertificate() {
     const modal = document.getElementById('certificate-modal');
     if (modal) modal.style.display = 'none';
+    document.body.classList.remove('modal-open');
+    clearDownloadStatus();
 }
 
-function downloadCertificate() {
-    alert('Certificate download: in a production deployment, this can be implemented using html2canvas/jsPDF to export the certificate as an image or PDF.');
+function setDownloadStatus(message, type = 'info', isSpinning = false) {
+    const statusEl = document.getElementById('cert-download-status');
+    if (!statusEl) return;
+    statusEl.className = `cert-status-alert ${type}`;
+    const icon = isSpinning
+        ? '<i class="fas fa-spinner fa-spin"></i>'
+        : (type === 'success' ? '<i class="fas fa-check-circle"></i>' : '<i class="fas fa-info-circle"></i>');
+    statusEl.innerHTML = `${icon} <span>${message}</span>`;
+    statusEl.style.display = 'flex';
+}
+
+function clearDownloadStatus() {
+    const statusEl = document.getElementById('cert-download-status');
+    if (statusEl) statusEl.style.display = 'none';
+}
+
+function getSanitizedCandidateName() {
+    const raw = (userData.studentName && userData.studentName !== 'CA Aspirant')
+        ? userData.studentName
+        : 'CA_Aspirant';
+    return raw.replace(/[^a-zA-Z0-9_-]/g, '_');
+}
+
+function triggerFileDownload(url, filename) {
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+// Download Certificate as PNG Image Button Action
+async function downloadCertificateAsImage() {
+    const btn = document.getElementById('btn-download-image');
+    if (btn) btn.disabled = true;
+    setDownloadStatus('Generating crisp high-resolution certificate image...', 'info', true);
+
+    try {
+        const certEl = document.getElementById('certificate-content');
+        const filename = `Exam_Readiness_Certificate_${getSanitizedCandidateName()}.png`;
+
+        if (window.html2canvas) {
+            const canvas = await window.html2canvas(certEl, {
+                scale: 2.2,
+                useCORS: true,
+                backgroundColor: '#ffffff',
+                logging: false
+            });
+            const imgUrl = canvas.toDataURL('image/png');
+            triggerFileDownload(imgUrl, filename);
+            setDownloadStatus('High-resolution PNG image downloaded successfully! Check your downloads folder.', 'success');
+        } else {
+            // High-resolution canvas fallback
+            const canvas = generateFallbackCanvas();
+            const imgUrl = canvas.toDataURL('image/png');
+            triggerFileDownload(imgUrl, filename);
+            setDownloadStatus('PNG certificate generated and downloaded successfully!', 'success');
+        }
+    } catch (err) {
+        console.warn('html2canvas error, using high-res canvas fallback:', err);
+        try {
+            const canvas = generateFallbackCanvas();
+            const imgUrl = canvas.toDataURL('image/png');
+            triggerFileDownload(imgUrl, `Exam_Readiness_Certificate_${getSanitizedCandidateName()}.png`);
+            setDownloadStatus('Certificate image generated & downloaded successfully!', 'success');
+        } catch (fallbackErr) {
+            setDownloadStatus('Failed to generate image: ' + fallbackErr.message, 'error');
+        }
+    } finally {
+        if (btn) btn.disabled = false;
+    }
+}
+
+// Download Certificate as PDF Document Button Action
+async function downloadCertificateAsPDF() {
+    const btn = document.getElementById('btn-download-pdf');
+    if (btn) btn.disabled = true;
+    setDownloadStatus('Generating landscape A4 PDF certificate...', 'info', true);
+
+    try {
+        const certEl = document.getElementById('certificate-content');
+        const filename = `Exam_Readiness_Certificate_${getSanitizedCandidateName()}.pdf`;
+
+        let canvas;
+        if (window.html2canvas) {
+            canvas = await window.html2canvas(certEl, {
+                scale: 2.2,
+                useCORS: true,
+                backgroundColor: '#ffffff',
+                logging: false
+            });
+        } else {
+            canvas = generateFallbackCanvas();
+        }
+
+        if (window.jspdf && window.jspdf.jsPDF) {
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF({
+                orientation: 'landscape',
+                unit: 'mm',
+                format: 'a4'
+            });
+
+            const imgData = canvas.toDataURL('image/png', 1.0);
+            const pdfWidth = 297;  // A4 Landscape width mm
+            const pdfHeight = 210; // A4 Landscape height mm
+
+            const imgAspect = canvas.width / canvas.height;
+            let targetW = pdfWidth - 16;
+            let targetH = targetW / imgAspect;
+
+            if (targetH > pdfHeight - 16) {
+                targetH = pdfHeight - 16;
+                targetW = targetH * imgAspect;
+            }
+
+            const posX = (pdfWidth - targetW) / 2;
+            const posY = (pdfHeight - targetH) / 2;
+
+            pdf.addImage(imgData, 'PNG', posX, posY, targetW, targetH, undefined, 'FAST');
+            pdf.save(filename);
+            setDownloadStatus('PDF certificate downloaded successfully!', 'success');
+        } else {
+            printCertificate();
+            setDownloadStatus('Print preview opened. Select "Save as PDF" to save your certificate.', 'success');
+        }
+    } catch (err) {
+        console.error('PDF generation error:', err);
+        setDownloadStatus('PDF export error. Opening direct printable view...', 'error');
+        printCertificate();
+    } finally {
+        if (btn) btn.disabled = false;
+    }
+}
+
+// Direct Print Certificate
+function printCertificate() {
+    const certEl = document.getElementById('certificate-content');
+    if (!certEl) return;
+
+    const printWin = window.open('', '_blank', 'width=1000,height=750');
+    if (!printWin) {
+        alert('Please allow popups to print your certificate.');
+        return;
+    }
+
+    const htmlContent = `<!DOCTYPE html>
+<html>
+<head>
+    <title>Print Certificate - ${userData.studentName || 'CA Aspirant'}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <style>
+        @page { size: landscape; margin: 8mm; }
+        body { background: #ffffff; margin: 0; padding: 20px; display: flex; justify-content: center; }
+        #certificate-content { width: 100% !important; max-width: 900px; box-shadow: none !important; }
+    </style>
+</head>
+<body>
+    ${certEl.outerHTML}
+    <script>
+        window.onload = function() {
+            setTimeout(function() {
+                window.print();
+            }, 500);
+        };
+    <\/script>
+</body>
+</html>`;
+
+    printWin.document.open();
+    printWin.document.write(htmlContent);
+    printWin.document.close();
+}
+
+// Pure HTML5 Canvas Drawing Fallback (Zero external dependency)
+function generateFallbackCanvas() {
+    const last = (userData.history && userData.history.length)
+        ? userData.history[userData.history.length - 1]
+        : { overall: 75, cognitive: 70, emotional: 75, behavioral: 80, physical: 75, date: new Date().toISOString() };
+
+    const canvas = document.createElement('canvas');
+    canvas.width = 1720;
+    canvas.height = 1200;
+    const ctx = canvas.getContext('2d');
+
+    // Background gradient
+    const bgGrad = ctx.createLinearGradient(0, 0, 1720, 1200);
+    bgGrad.addColorStop(0, '#ffffff');
+    bgGrad.addColorStop(0.5, '#fcfdfd');
+    bgGrad.addColorStop(1, '#f3f6fb');
+    ctx.fillStyle = bgGrad;
+    ctx.fillRect(0, 0, 1720, 1200);
+
+    // Outer Royal Navy Border
+    ctx.lineWidth = 18;
+    ctx.strokeStyle = '#14326e';
+    ctx.strokeRect(30, 30, 1660, 1140);
+
+    // Inner Gold Border
+    ctx.lineWidth = 4;
+    ctx.strokeStyle = '#d4af37';
+    ctx.strokeRect(55, 55, 1610, 1090);
+
+    // Thin accent inner border
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = '#e0cf9b';
+    ctx.strokeRect(65, 65, 1590, 1070);
+
+    // Header Title
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#14326e';
+    ctx.font = 'bold 54px Georgia, serif';
+    ctx.fillText('CERTIFICATE OF ACHIEVEMENT', 860, 180);
+
+    // Subtitle
+    ctx.fillStyle = '#556677';
+    ctx.font = 'italic 26px Georgia, serif';
+    ctx.fillText('Exam Psychological & Behavioral Readiness Assessment', 860, 230);
+
+    // Gold Ribbon / Stars
+    ctx.fillStyle = '#d4af37';
+    ctx.font = 'bold 22px sans-serif';
+    ctx.fillText('★ ★ ★   OFFICIAL READINESS CREDENTIAL   ★ ★ ★', 860, 275);
+
+    // Salutation
+    ctx.fillStyle = '#666666';
+    ctx.font = '24px sans-serif';
+    ctx.fillText('THIS CREDENTIAL IS PROUDLY PRESENTED TO', 860, 350);
+
+    // Candidate Name
+    const nameText = userData.studentName || 'CA Aspirant';
+    ctx.fillStyle = '#14326e';
+    ctx.font = 'bold 64px Georgia, serif';
+    ctx.fillText(nameText, 860, 435);
+
+    // Name underline
+    const nameWidth = ctx.measureText(nameText).width;
+    ctx.strokeStyle = '#d4af37';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(860 - (nameWidth / 2) - 30, 455);
+    ctx.lineTo(860 + (nameWidth / 2) + 30, 455);
+    ctx.stroke();
+
+    // Description text
+    ctx.fillStyle = '#444444';
+    ctx.font = '22px sans-serif';
+    ctx.fillText('for successfully undergoing the comprehensive psychological and behavioral readiness assessment', 860, 520);
+    ctx.fillText('designed for CA exam aspirants, demonstrating overall psychological readiness of:', 860, 555);
+
+    // Score Circle Badge
+    const scoreVal = Math.round(last.overall) + '%';
+    ctx.fillStyle = '#14326e';
+    ctx.beginPath();
+    ctx.arc(860, 680, 80, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.lineWidth = 6;
+    ctx.strokeStyle = '#d4af37';
+    ctx.stroke();
+
+    ctx.fillStyle = '#ffd700';
+    ctx.font = 'bold 52px sans-serif';
+    ctx.fillText(scoreVal, 860, 690);
+
+    ctx.fillStyle = '#ffffff';
+    ctx.font = '14px sans-serif';
+    ctx.fillText('OVERALL SCORE', 860, 725);
+
+    // Level Pill
+    let level = 'Developing';
+    if (last.overall >= 90) level = 'Outstanding';
+    else if (last.overall >= 75) level = 'Strong';
+    else if (last.overall >= 60) level = 'Moderate';
+
+    ctx.fillStyle = '#1b5e20';
+    ctx.font = 'bold 26px sans-serif';
+    ctx.fillText(`${level} Readiness Level`, 860, 810);
+
+    // Dimensions Breakdown Row
+    ctx.fillStyle = '#555555';
+    ctx.font = '20px sans-serif';
+    const breakdownText = `Cognitive: ${Math.round(last.cognitive || 0)}%   •   Emotional: ${Math.round(last.emotional || 0)}%   •   Behavioral: ${Math.round(last.behavioral || 0)}%   •   Physical: ${Math.round(last.physical || 0)}%`;
+    ctx.fillText(breakdownText, 860, 860);
+
+    // Footer Divider
+    ctx.strokeStyle = '#d0d8e4';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(100, 930);
+    ctx.lineTo(1620, 930);
+    ctx.stroke();
+
+    // Footer Left: Date & ID
+    const dateStr = new Date(last.date || Date.now()).toLocaleDateString('en-IN', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    });
+    ctx.textAlign = 'left';
+    ctx.fillStyle = '#333333';
+    ctx.font = 'bold 20px sans-serif';
+    ctx.fillText(`Issued Date: ${dateStr}`, 120, 985);
+    ctx.fillStyle = '#666666';
+    ctx.font = '17px sans-serif';
+    ctx.fillText('Assessment ID: CA-PR-' + Math.abs(Math.round(last.overall * 100)) + '-VERIFIED', 120, 1020);
+
+    // Footer Center: Verified Gold Stamp
+    ctx.save();
+    ctx.translate(860, 1010);
+    ctx.beginPath();
+    ctx.arc(0, 0, 48, 0, Math.PI * 2);
+    ctx.fillStyle = '#d4af37';
+    ctx.fill();
+    ctx.lineWidth = 3;
+    ctx.strokeStyle = '#ffffff';
+    ctx.stroke();
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#14326e';
+    ctx.font = 'bold 15px sans-serif';
+    ctx.fillText('VERIFIED', 0, -4);
+    ctx.fillText('ASSESSMENT', 0, 16);
+    ctx.restore();
+
+    // Footer Right: Signature & Developer
+    ctx.textAlign = 'right';
+    ctx.fillStyle = '#14326e';
+    ctx.font = 'italic 34px Georgia, cursive';
+    ctx.fillText('CA Tanmay Rajendra Bhavar', 1600, 985);
+    ctx.fillStyle = '#222222';
+    ctx.font = 'bold 19px sans-serif';
+    ctx.fillText('CA Tanmay Rajendra Bhavar', 1600, 1020);
+    ctx.fillStyle = '#666666';
+    ctx.font = '16px sans-serif';
+    ctx.fillText('Developer & Assessment Designer (Nashik)', 1600, 1048);
+
+    return canvas;
 }
 
 function exportResults() {
@@ -888,8 +1295,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('exam-form');
     if (form) form.addEventListener('submit', calculateResults);
 
-    window.onclick = function (event) {
+    window.addEventListener('click', (event) => {
         const modal = document.getElementById('certificate-modal');
-        if (modal && event.target === modal) modal.style.display = 'none';
-    };
+        if (modal && event.target === modal) closeCertificate();
+    });
+
+    window.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') closeCertificate();
+    });
 });
